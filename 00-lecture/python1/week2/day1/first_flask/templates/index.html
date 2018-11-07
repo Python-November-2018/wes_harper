@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Hello World</h1>
+  <h2>{{ color }}</h2>
+  <ul>
+    {% for item in my_list %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+
+  <a href="/other">Other</a>
+  <form action="/process" method="post">
+    <label for="first_name">First Name:</label>
+    <input type="text" name="first_name" placeholder="Vanilla">
+    <label for="last_name">Last Name:</label>
+    <input type="text" name="last_name" placeholder="Ice">
+    <input type="submit" value="Enter Name">
+  </form>
+</body>
+</html>
