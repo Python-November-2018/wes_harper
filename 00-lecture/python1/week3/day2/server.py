@@ -82,6 +82,30 @@ def create_user():
     session['user_id'] = user_id
     return redirect('/')
 
+@app.route('/login', methods=['POST'])
+def login():
+  # query the database to find the user with the given email address
+  db = connectToMySQL(SCHEMA)
+  query = 'SELECT id, email, pw_hash FROM users WHERE email = %(email)s;'
+  data = {
+    'email': request.form['email']
+  }
+  matching_users = db.query_db(query, data)
+  if not matching_users:
+    flash("Email or password incorrect")
+    return redirect('/users/new')
+
+  # compare the given password to the stored password
+    # use bcrypt
+  user = matching_users[0]
+  if not bcrypt.check_password_hash(user['pw_hash'], request.form['password']):
+    flash("Email or password incorrect")
+    return redirect('/users/new')
+
+  session['user_id'] = user['id']
+  return redirect('/')
+  # if they match, set user_id into session and redirect to index
+
 @app.route('/logout')
 def logout():
   session.clear()
