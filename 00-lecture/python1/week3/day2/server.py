@@ -15,7 +15,28 @@ def index():
   if 'user_id' not in session:
     return redirect('/users/new')
 
-  return render_template('index.html')
+  db = connectToMySQL(SCHEMA)
+  query = 'SELECT * FROM locations;'
+  location_list = db.query_db(query)
+
+  db = connectToMySQL(SCHEMA)
+  query = 'SELECT gold_amount, locations.name AS location FROM activities JOIN locations ON activities.location_id = locations.id WHERE activities.user_id = %(user_id)s;'
+  data = {
+    'user_id': session['user_id']
+  }
+  activity_list = db.query_db(query, data)
+
+  db = connectToMySQL(SCHEMA)
+  query = 'SELECT gold FROM users WHERE id = %(user_id)s;'
+  data = {
+    'user_id': session['user_id']
+  }
+  user_list = db.query_db(query, data)
+  print("*" * 80)
+  print(user_list)
+  total_gold = user_list[0]['gold']
+
+  return render_template('index.html', locations=location_list, activities=activity_list, gold=total_gold)
 
 @app.route('/users/new')
 def login_page():

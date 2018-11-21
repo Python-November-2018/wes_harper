@@ -8,12 +8,40 @@
    href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
   <link rel="stylesheet" type="text/css" 
    href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <title>Document</title>
 </head>
 <body>
   <div class="container">
-    <h1>Index Page</h1>
+    <h1>Ninja Gold</h1>
     <a href="/logout" class="button">Logout</a>
+    <div class="gold">
+      <p>Your Gold: <span>{{ gold }}</span></p>
+    </div>
+    <div class="locations">
+      {% for location in locations %}
+        <div class="location">
+          <form action="/process" method="post">
+            <h2>{{ location['name'] }}</h2>
+            <p>{{ location['min_gold'] }} - {{ location['max_gold'] }} gold</p>
+            <input type="hidden" name="location" value="{{ location['id'] }}">
+            <input type="submit" value="Find Gold!">
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="activities">
+      <h2>Activities:</h2>
+      <div class="activity-list">
+        {% for activity in activities %}
+          {% if activity['gold_amount'] > 0 %}
+            <p class="green">Earned {{ activity['gold_amount'] }} golds from the {{ activity['location'] }}!</p>
+          {% else %}
+            <p class="red">Lost {{ activity['gold_amount'] }} golds from the {{ activity['location'] }}!</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </body>
 </html>
