@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, session, request, flash
 from flask_bcrypt import Bcrypt
 from mysqlconnection import connectToMySQL
+import helpers
 import re
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -20,7 +21,7 @@ def index():
   location_list = db.query_db(query)
 
   db = connectToMySQL(SCHEMA)
-  query = 'SELECT gold_amount, locations.name AS location FROM activities JOIN locations ON activities.location_id = locations.id WHERE activities.user_id = %(user_id)s;'
+  query = 'SELECT gold_amount, locations.name AS location FROM activities JOIN locations ON activities.location_id = locations.id WHERE activities.user_id = %(user_id)s ORDER BY activities.created_at DESC;'
   data = {
     'user_id': session['user_id']
   }
@@ -32,11 +33,18 @@ def index():
     'user_id': session['user_id']
   }
   user_list = db.query_db(query, data)
-  print("*" * 80)
-  print(user_list)
   total_gold = user_list[0]['gold']
 
   return render_template('index.html', locations=location_list, activities=activity_list, gold=total_gold)
+
+@app.route('/process', methods=['POST'])
+def process():
+  gold = helpers.calculate_gold(request.form['location'])
+  helpers.create_activity(session['user_id'], request.form['location'], gold)
+  user_gold = helpers.get_current_gold(session['user_id'])
+  updated_gold = user_gold + gold
+  helpers.update_user_gold(session['user_id'], updated_gold)
+  return redirect('/')
 
 @app.route('/users/new')
 def login_page():
@@ -126,6 +134,21 @@ def login():
   session['user_id'] = user['id']
   return redirect('/')
   # if they match, set user_id into session and redirect to index
+
+@app.route('/locations/new')
+def new_location():
+  return render_template('new_location.html')
+
+@app.route('/locations/create', methods=['POST'])
+def create_location():
+  errors = helpers.validate_location(request.form)
+  if errors:
+    for error in errors:
+      flash(error)
+    return redirect('/locations/new')
+  
+  helpers.create_location(request.form)
+  return redirect('/')
 
 @app.route('/logout')
 def logout():
