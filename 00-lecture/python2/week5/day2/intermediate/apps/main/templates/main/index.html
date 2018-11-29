@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" 
+   href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+  <link rel="stylesheet" type="text/css" 
+   href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+  <title>Document</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Hello World</h1>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <form action="/process/" method="post">
+      {% csrf_token %}
+      <label for="name">Name:</label>
+      <input type="text" name="name" placeholder="Vanilla Ice">
+      <label for="email">Name:</label>
+      <input type="text" name="email" placeholder="vanilla@iceicebaby.com">
+      <label for="favorite_language">Name:</label>
+      <select name="favorite_language" id="">
+        <option value="python">Python</option>
+        <option value="csharp">C#</option>
+        <option value="js">JavaScript</option>
+        <option value="ruby">Ruby</option>
+      </select>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</body>
+</html>
