@@ -18,7 +18,14 @@ def create(req):
   return redirect('/')
 
 def login(req):
-  pass
+  valid, result = User.objects.check_login(req.POST)
+  if not valid:
+    for error in result:
+      messages.error(req, error)
+    return redirect('/users/new')
+
+  req.session['user_id'] = result.id
+  return redirect('/')
 
 def logout(req):
   req.session.clear()
