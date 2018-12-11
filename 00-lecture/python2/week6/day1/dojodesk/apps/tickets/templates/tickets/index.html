@@ -13,8 +13,32 @@
 <body>
   <div class="container">
     <h1>Tickets Index</h1>
-    <h2>{{ request.session.user_id }}</h2>
-    <a href="/users/logout" class="button">Logout</a>
+    <a href="{% url 'tickets:new' %}" class="button">Create A Ticket</a>
+    <a href="{% url 'users:logout' %}" class="button">Logout</a>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Assignee</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ticket in all_tickets %}
+          <tr>
+            <td><a href="{% url 'tickets:show' ticket.id %}">{{ ticket.title }}</a></td>
+            <td>{{ ticket.description|truncatechars:15 }}</td>
+            <td>{{ ticket.priority }}</td>
+            <td>{{ ticket.status }}</td>
+            <td>{{ ticket.assignee.first_name }} {{ ticket.assignee.last_name }} - {{ ticket.assignee.email }}</td>
+            <td>TBD</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </body>
 </html>

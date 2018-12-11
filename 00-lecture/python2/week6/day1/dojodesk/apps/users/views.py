@@ -11,22 +11,22 @@ def create(req):
   if errors:
     for error in errors:
       messages.error(req, error)
-    return redirect('/users/new')
+    return redirect('users:new')
   # create and login user
   user = User.objects.create_user(req.POST)
   req.session['user_id'] = user.id
-  return redirect('/')
+  return redirect('tickets:index')
 
 def login(req):
   valid, result = User.objects.check_login(req.POST)
   if not valid:
     for error in result:
       messages.error(req, error)
-    return redirect('/users/new')
+    return redirect('users:new')
 
   req.session['user_id'] = result.id
-  return redirect('/')
+  return redirect('tickets:index')
 
 def logout(req):
   req.session.clear()
-  return redirect('/users/new')
+  return redirect('users:new')
