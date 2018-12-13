@@ -42,6 +42,21 @@ class TicketManager(models.Manager):
       assignee = assignee,
     )
 
+  def update_ticket(self, form_data, ticket_id):
+    ticket = Ticket.objects.get(id=ticket_id)
+    assignee = User.objects.get(id=form_data['assignee'])
+
+    ticket.title = form_data['title']
+    ticket.description = form_data['description']
+    ticket.priority = int(form_data['priority'])
+    ticket.status = form_data['status']
+    ticket.assignee = assignee
+    ticket.save()
+  
+  def delete_ticket(self, ticket_id):
+    ticket = Ticket.objects.get(id=ticket_id)
+    ticket.delete()
+
 class Ticket(models.Model):
   title = models.CharField(max_length=255)
   description = models.TextField()

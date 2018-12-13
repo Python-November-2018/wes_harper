@@ -1,0 +1,37 @@
+{% extends './layout.html' %}
+{% block body %}
+  <h1>Edit A Support Ticket</h1>
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <form action="{% url 'tickets:update' ticket.id %}" method="post">
+    {% csrf_token %}
+    <label for="title">Title:</label>
+    <input type="text" name="title" placeholder="Change Request" value="{{ ticket.title }}">
+    <label for="description">Description:</label>
+    <textarea name="description" id="" cols="30" rows="10">{{ ticket.description }}</textarea>
+    <label for="priority">Priority (1-low, 5-high):</label>
+    <select name="priority" id="">
+      {% for priority in priority_list %}
+        <option value="{{ priority }}" {% if ticket.priority == priority %} selected {% endif %}>{{ priority }}</option>
+      {% endfor %}
+    </select>
+    <label for="status">Status:</label>
+    <select name="status" id="">
+      {% for status in status_list %}
+      <option value="{{ status }}" {% if ticket.status == status %} selected {% endif %}>{{ status }}</option>
+      {% endfor %}
+    </select>
+    <label for="assignee">Assignee:</label>
+    <select name="assignee" id="">
+      {% for assignee in assignees %}
+      <option value="{{ assignee.id }}" {% if ticket.assignee == assignee %} selected {% endif %}>{{ assignee.first_name }} {{ assignee.last_name }} - {{ assignee.username }}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Update Ticket">
+  </form>
+{% endblock %}

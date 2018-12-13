@@ -1,44 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" type="text/css" 
-   href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
-  <link rel="stylesheet" type="text/css" 
-   href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
-  <title>Document</title>
-</head>
-<body>
-  <div class="container">
-    <h1>Tickets Index</h1>
-    <a href="{% url 'tickets:new' %}" class="button">Create A Ticket</a>
-    <a href="{% url 'users:logout' %}" class="button">Logout</a>
-    <table>
-      <thead>
+{% extends './layout.html' %}
+{% block body %}
+  <h1>Tickets Index</h1>
+  <h2>Hello, {{ user_info.first_name }}</h2>
+  <h3>Tickets Assigned to You</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Assignee</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ticket in user_tickets %}
         <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Priority</th>
-          <th>Status</th>
-          <th>Assignee</th>
-          <th>Actions</th>
+          <td><a href="{% url 'tickets:show' ticket.id %}">{{ ticket.title }}</a></td>
+          <td>{{ ticket.description|truncatechars:15 }}</td>
+          <td>{{ ticket.priority }}</td>
+          <td>{{ ticket.status }}</td>
+          <td>{{ ticket.assignee.first_name }} {{ ticket.assignee.last_name }} - {{ ticket.assignee.email }}</td>
+          <td>
+            <a href="{% url 'tickets:edit' ticket.id %}" class="button">Edit</a>
+            <form action="{% url 'tickets:delete' ticket.id %}" method="post">
+              {% csrf_token %}
+              <input type="submit" value="Delete">
+            </form>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        {% for ticket in all_tickets %}
-          <tr>
-            <td><a href="{% url 'tickets:show' ticket.id %}">{{ ticket.title }}</a></td>
-            <td>{{ ticket.description|truncatechars:15 }}</td>
-            <td>{{ ticket.priority }}</td>
-            <td>{{ ticket.status }}</td>
-            <td>{{ ticket.assignee.first_name }} {{ ticket.assignee.last_name }} - {{ ticket.assignee.email }}</td>
-            <td>TBD</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</body>
-</html>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h3>Tickets Assigned to Others</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Assignee</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ticket in other_tickets %}
+        <tr>
+          <td><a href="{% url 'tickets:show' ticket.id %}">{{ ticket.title }}</a></td>
+          <td>{{ ticket.description|truncatechars:15 }}</td>
+          <td>{{ ticket.priority }}</td>
+          <td>{{ ticket.status }}</td>
+          <td>{{ ticket.assignee.first_name }} {{ ticket.assignee.last_name }} - {{ ticket.assignee.email }}</td>
+          <td>
+            <a href="{% url 'tickets:edit' ticket.id %}" class="button">Edit</a>
+            <form action="{% url 'tickets:delete' ticket.id %}" method="post">
+              {% csrf_token %}
+              <input type="submit" value="Delete">
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

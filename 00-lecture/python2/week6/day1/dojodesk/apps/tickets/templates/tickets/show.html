@@ -1,20 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" type="text/css" 
-   href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
-  <link rel="stylesheet" type="text/css" 
-   href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
-  <title>Ticket #</title>
-</head>
-<body>
-  <div class="container">
-    <h1>Ticket ID #{{ ticket.id }}</h1>
-    <a href="{% url 'tickets:index' %}" class="button">Back</a>
-    <h2>{{ ticket.title }}</h2>
-  </div>
-</body>
-</html>
+{% extends './layout.html' %}
+{% block body %}
+  <h1>Ticket ID #{{ ticket.id }}</h1>
+  <a href="{% url 'tickets:index' %}" class="button">Back</a>
+  <h2>{{ ticket.title }}</h2>
+{% endblock %}

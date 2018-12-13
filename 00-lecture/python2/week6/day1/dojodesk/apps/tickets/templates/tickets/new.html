@@ -1,53 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" type="text/css" 
-   href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
-  <link rel="stylesheet" type="text/css" 
-   href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
-  <title>New Ticket</title>
-</head>
-<body>
-  <div class="container">
-    <h1>Create A Support Ticket</h1>
-    {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-          <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    <form action="{% url 'tickets:create' %}" method="post">
-      {% csrf_token %}
-      <label for="title">Title:</label>
-      <input type="text" name="title" placeholder="Change Request">
-      <label for="description">Description:</label>
-      <textarea name="description" id="" cols="30" rows="10"></textarea>
-      <label for="priority">Priority (1-low, 5-high):</label>
-      <select name="priority" id="">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      <label for="status">Status:</label>
-      <select name="status" id="">
-        <option value="New">New</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Done">Done</option>
-      </select>
-      <label for="assignee">Assignee:</label>
-      <select name="assignee" id="">
-        {% for assignee in assignees %}
-          <option value="{{ assignee.id }}">{{ assignee.first_name }} {{ assignee.last_name }} - {{ assignee.username }}</option>
-        {% endfor %}
-      </select>
-      <input type="submit" value="Create Ticket">
-    </form>
-  </div>
-</body>
-</html>
+{% extends './layout.html' %}
+{% block body %}
+  <h1>Create A Support Ticket</h1>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <form action="{% url 'tickets:create' %}" method="post">
+    {% csrf_token %}
+    <label for="title">Title:</label>
+    <input type="text" name="title" placeholder="Change Request">
+    <label for="description">Description:</label>
+    <textarea name="description" id="" cols="30" rows="10"></textarea>
+    <label for="priority">Priority (1-low, 5-high):</label>
+    <select name="priority" id="">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <label for="status">Status:</label>
+    <select name="status" id="">
+      <option value="New">New</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Done">Done</option>
+    </select>
+    <label for="assignee">Assignee:</label>
+    <select name="assignee" id="">
+      {% for assignee in assignees %}
+        <option value="{{ assignee.id }}">{{ assignee.first_name }} {{ assignee.last_name }} - {{ assignee.username }}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Create Ticket">
+  </form>
+{% endblock %}
