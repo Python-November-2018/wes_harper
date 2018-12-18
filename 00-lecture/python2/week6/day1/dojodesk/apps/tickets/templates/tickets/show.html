@@ -1,6 +1,26 @@
 {% extends './layout.html' %}
 {% block body %}
-  <h1>Ticket ID #{{ ticket.id }}</h1>
-  <a href="{% url 'tickets:index' %}" class="button">Back</a>
-  <h2>{{ ticket.title }}</h2>
+  <h1>{{ ticket.title }} ID: #{{ ticket.id }}</h1>
+  <h3>Add a comment</h3>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <form action="{% url 'comments:create' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="ticket" value="{{ ticket.id }}">
+    <textarea name="content" id="" cols="30" rows="10" placeholder="Insert comment here..."></textarea>
+    <input type="submit" value="Comment">
+  </form>
+  <div class="comment-container">
+    {% for comment in ticket.comments.all %}
+      <div class="comment">
+        <h4>{{ comment.user.first_name }} {{ comment.user.last_name }}</h4>
+        <p>{{ comment.content }}</p>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}
