@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib import messages
 from .models import Ticket
 from ..users.models import User
+from django.core import serializers
+import json
 
 # Create your views here.
 def index(req):
@@ -46,7 +49,7 @@ def show(req, ticket_id):
 
   try:
     context = {
-      'ticket': Ticket.objects.get(id=ticket_id)
+      'ticket': Ticket.objects.get(id=ticket_id),
     }
   except:
     return redirect('tickets:index')
@@ -87,3 +90,20 @@ def update(req, ticket_id):
 def delete(req, ticket_id):
   Ticket.objects.delete_ticket(ticket_id)
   return redirect('tickets:index')
+
+def ajax_new(req):
+  if 'user_id' not in req.session:
+    return redirect('users:new')
+
+  context = {
+    "assignees": User.objects.all()
+  }
+  return render(req, 'tickets/ajax-new.html', context)
+
+def ajax_create(req):
+  errors = Ticket.objects.validate(req.POST)
+  if errors:
+    return HttpResponse(json.dumps(errors), content_type='application/json', status=400)
+
+  ticket = Ticket.objects.create_ticket(req.POST)
+  return HttpResponse(serializers.serialize('json', [ticket]), content_type='application/json', status=200)

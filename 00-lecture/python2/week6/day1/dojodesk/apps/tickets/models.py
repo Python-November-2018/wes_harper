@@ -33,7 +33,7 @@ class TicketManager(models.Manager):
     # get user
     # doesn't need try/catch due to validations from self.validate
     assignee = User.objects.get(id=form_data['assignee'])
-    self.create(
+    return self.create(
       title = form_data['title'],
       description = form_data['description'],
       status = form_data['status'],
